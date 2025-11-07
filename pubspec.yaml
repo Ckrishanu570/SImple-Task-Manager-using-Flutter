@@ -1,0 +1,40 @@
+name: task_manager_fresh
+description: "A simple Flutter task manager app with Hive + Notifications."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.18.0 <4.0.0'
+  flutter: '>=3.3.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Firebase dependencies
+  firebase_core: ^3.2.0
+  firebase_auth: ^5.1.4
+  cloud_firestore: ^5.0.3
+
+  # Notifications and Permissions
+  flutter_local_notifications: ^17.2.3
+  timezone: ^0.9.2
+  permission_handler: ^11.0.1
+
+  # Google Sign-In related
+  google_sign_in: ^6.2.1
+  googleapis: ^12.0.0
+  http: ^1.1.2
+
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  hive_generator: ^2.0.1
+  build_runner: ^2.4.6
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true

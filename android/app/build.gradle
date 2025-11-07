@@ -1,0 +1,102 @@
+
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'dev.flutter.flutter-gradle-plugin'
+    id 'com.google.gms.google-services'
+}
+
+// Functions to extract version info from pubspec.yaml
+def getVersionName() {
+    def pubspecFile = new File(rootDir, "../pubspec.yaml")
+    def versionLine = pubspecFile.readLines().find { it.startsWith("version:") } ?: "version: 1.0.0+1"
+    return versionLine.split("version:")[1].trim().split("\\+")[0]
+}
+
+def getVersionCode() {
+    def pubspecFile = new File(rootDir, "../pubspec.yaml")
+    def versionLine = pubspecFile.readLines().find { it.startsWith("version:") } ?: "version: 1.0.0+1"
+    def code = versionLine.split("\\+").size() > 1 ? versionLine.split("\\+")[1].trim() : "1"
+    return code.toInteger()
+}
+
+android {
+    namespace "com.example.task_manager_fresh"
+    compileSdk 36
+
+    // INFO: It's good practice to set up your signing configurations for release builds.
+    // You'll need to create a keystore.properties file in the android/ directory.
+    // See the Flutter documentation for "Signing the app" for more details.
+    signingConfigs {
+        debug {
+            // Default debug signing config
+        }
+        release {
+            // Example of how you would configure release signing
+            // if (project.rootProject.file('keystore.properties').exists()) {
+            //     def keystoreProperties = new Properties()
+            //     project.rootProject.file('keystore.properties').withInputStream { stream ->
+            //         keystoreProperties.load(stream)
+            //     }
+            //     storeFile file(keystoreProperties['storeFile'])
+            //     storePassword keystoreProperties['storePassword']
+            //     keyAlias keystoreProperties['keyAlias']
+            //     keyPassword keystoreProperties['keyPassword']
+            // }
+        }
+    }
+
+    defaultConfig {
+        applicationId "com.example.task_manager_fresh"
+        minSdk 24
+        targetSdk 36
+
+        // Use dynamic versioning with safe fallback
+        versionCode getVersionCode() ?: 1
+        versionName getVersionName() ?: "1.0.0"
+    }
+
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+        coreLibraryDesugaringEnabled true
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
+    buildTypes {
+        debug {
+            // No changes needed for debug
+            minifyEnabled false
+        }
+        release {
+            // ✅ CORRECTED: Enabled minification and resource shrinking to reduce app size.
+            minifyEnabled true
+            shrinkResources true
+
+            // ✅ CORRECTED: Removed the debug signing config. You must use a proper release signing config.
+            // This tells Gradle to use the 'release' signing config defined above.
+            signingConfig signingConfigs.release
+
+            // INFO: Add your ProGuard rules here to prevent code obfuscation issues.
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+}
+
+flutter {
+    source '../..'
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.22"
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.0.4"
+    implementation "androidx.core:core-ktx:1.12.0"
+}
